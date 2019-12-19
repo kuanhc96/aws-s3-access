@@ -6,7 +6,7 @@ public class Credentials {
 
     public static final String access_key_id= "AKIAQZW7PYH326JYUBUL";
 
-    public static final String secret_access_key ="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";
+    public static final String secret_access_key ="";
 
 
 
