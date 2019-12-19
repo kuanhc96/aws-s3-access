@@ -16,7 +16,7 @@ import java.nio.file.Paths;
 public class S3JavaSDKExample {
 
 
-    public static void main(String[] args)throws Exception {
+    public static void main(String[] args) throws Exception {
 
         System.out.print("boom");
         //demoServerSideEncryptionNotResource();
@@ -33,7 +33,7 @@ public class S3JavaSDKExample {
 
         AmazonS3Client s3Client = new AmazonS3Client(awsCreds);
 
-        // BucketUtils.deleteAllBuckets(s3Client);
+        BucketUtils.deleteAllBuckets(s3Client);
 
 
         String newBucketName = "matt" + System.currentTimeMillis();
@@ -72,9 +72,7 @@ public class S3JavaSDKExample {
     }
 
 
-
     public static void demoServerSideEncryption() throws Exception {
-
 
 
         BasicAWSCredentials awsCreds = new BasicAWSCredentials(Credentials.access_key_id, Credentials.secret_access_key);
@@ -82,18 +80,17 @@ public class S3JavaSDKExample {
         AmazonS3Client s3Client = new AmazonS3Client(awsCreds);
 
 
-        for (Bucket bucket:s3Client.listBuckets()){
+        for (Bucket bucket : s3Client.listBuckets()) {
 
             BucketUtils.deleteBucket(bucket.getName(), s3Client);
 
         }
 
 
-
         String newBucketName = "mattua" + System.currentTimeMillis();
         s3Client.createBucket(newBucketName);
 
-        String policy = BucketUtils.readFileFromResources("encrypted-folder-policy.txt").replace("bucketname",newBucketName);
+        String policy = BucketUtils.readFileFromResources("encrypted-folder-policy.txt").replace("bucketname", newBucketName);
 
         /*
         This is a bucket policy - the bucket itself must be mentioned in the policy explicitly
@@ -131,7 +128,7 @@ public class S3JavaSDKExample {
 
             try {
                 PutObjectResult response1 = s3Client.putObject(putRequest1);
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("was not able to store an unencrypted file in this folder");
             }
@@ -155,7 +152,6 @@ public class S3JavaSDKExample {
     public static void demoServerSideEncryptionNotResource() throws Exception {
 
 
-
         BasicAWSCredentials awsCreds = new BasicAWSCredentials(Credentials.access_key_id, Credentials.secret_access_key);
 
         AmazonS3Client s3Client = new AmazonS3Client(awsCreds);
@@ -165,7 +161,7 @@ public class S3JavaSDKExample {
         String newBucketName = "matt" + System.currentTimeMillis();
         s3Client.createBucket(newBucketName);
 
-        String policy = BucketUtils.readFileFromResources("encrypted-folder-policy-notresource.txt").replace("bucketname",newBucketName);
+        String policy = BucketUtils.readFileFromResources("encrypted-folder-policy-notresource.txt").replace("bucketname", newBucketName);
 
         /*
         This is a bucket policy - the bucket itself must be mentioned in the policy explicitly
@@ -203,7 +199,7 @@ public class S3JavaSDKExample {
 
             try {
                 PutObjectResult response1 = s3Client.putObject(putRequest1);
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("was not able to store an unencrypted file in this folder");
             }
@@ -222,10 +218,6 @@ public class S3JavaSDKExample {
         }
 
     }
-
-
-
-
 
 
 }
