@@ -33,7 +33,6 @@ public class S3BucketPlacer {
 
         System.out.format("Uploading %s to S3 bucket %s...\n", imageName, BUCKET_NAME);
         try {
-            // s3Client.putObject(BUCKET_NAME, Credentials.ACCESS_KEY_ID, image);
             BufferedImage bImage = ImageIO.read(image);
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             if (imageName.endsWith(".png")) {
@@ -52,7 +51,6 @@ public class S3BucketPlacer {
             meta.setContentType("image/png");
 
             pruneImageName();
-            System.out.println(imageName);
 
             s3Client.putObject(new PutObjectRequest(
                     BUCKET_NAME, imageName, stream, meta)
@@ -64,6 +62,10 @@ public class S3BucketPlacer {
             System.err.println(e.getErrorMessage());
             System.exit(1);
         }
+    }
+
+    public String getImageName() {
+        return imageName;
     }
 
     // This method is used to find the image that is specified by the user.

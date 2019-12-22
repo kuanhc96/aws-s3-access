@@ -35,10 +35,20 @@ public class S3BucketAccessor {
         imageResizer = null;
     }
 
+    public void processImage(int width, int height) throws IOException {
+        BufferedImage bufferedImage = getImage();
+        resizeAndSaveImage(width, height, bufferedImage);
+    }
+
+    public void processImage(int width, int height, String name) {
+        BufferedImage bufferedImage = getImageFromCloud(name);
+        imageName = name;
+        resizeAndSaveImage(width, height, bufferedImage);
+    }
+
     // This method converts the BufferedImage that was specified by the user into a resized-BufferedImage.
     // The parameters specified determines the output image resolution.
-    public void resizeAndSaveImage(int width, int height) throws IOException{
-        BufferedImage bufferedImage = getImage();
+    private void resizeAndSaveImage(int width, int height, BufferedImage bufferedImage) {
 
         // if the parameters are 0, the user only requested original image.
         // therefore there is no need to resize.
@@ -47,9 +57,8 @@ public class S3BucketAccessor {
             imageResizer = new ImageResizer(bufferedImage);
             BufferedImage newImage = imageResizer.getResizedImage(width, height);
             try {
-                //File resizedDirectory = new File("./images-from-bucket/resized");
-                //resizedDirectory.mkdir();
-                File newImageFile = new File("resized-" + width + "x" + height + imageName);
+
+                File newImageFile = new File("resized-" + width + "x" + height + "-" + imageName);
 
                 if (imageName.endsWith(".png")) {
                     ImageIO.write(newImage, "png", newImageFile);
@@ -79,20 +88,22 @@ public class S3BucketAccessor {
                 illegalFile = false;
             }
         }
+
+        return getImageFromCloud(imageName);
+    }
+
+    private BufferedImage getImageFromCloud(String name) {
         BufferedImage bf = null;
         // The imageName that is specified is guaranteed to have a suffix of .png and .jpg
-        System.out.format("Downloading %s from S3 bucket %s...\n", imageName, BUCKET_NAME);
+        System.out.format("Downloading %s from S3 bucket %s...\n", name, BUCKET_NAME);
         try {
-            S3Object o = s3Client.getObject(BUCKET_NAME, imageName);
+            S3Object o = s3Client.getObject(BUCKET_NAME, name);
             S3ObjectInputStream s3is = o.getObjectContent();
             bf = ImageIO.read(s3is); // return BufferedImage
 
-            // keep copy of original file from bucket
-            //File resizedDirectory = new File("./images-from-bucket/originals");
-            //resizedDirectory.mkdir();
-            File originalImage = new File("original-size-" + imageName);
+            File originalImage = new File("original-size-" + name);
             try {
-                if (imageName.endsWith(".png")) {
+                if (name.endsWith(".png")) {
                     ImageIO.write(bf, "png", originalImage);
 
                 } else {
@@ -114,15 +125,10 @@ public class S3BucketAccessor {
             System.exit(1);
         }
 
-        /*
-        GetObjectRequest request = new GetObjectRequest(BUCKET_NAME, imageName);
-        S3Object fullObject = s3Client.getObject(request);
-        InputStream objectStream = fullObject.getObjectContent(); // convert object fetched from bucket into InputStream
-        BufferedImage image = ImageIO.read(objectStream); // convert InputStream into BufferedImage
-        return image;
-
-         */
         return bf;
+    }
 
+    private void setImageName(String name) { // only used when user calls the decompress from local drive option
+        imageName = name;
     }
 }
