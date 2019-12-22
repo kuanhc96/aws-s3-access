@@ -17,9 +17,7 @@ import com.amazonaws.services.s3.model.S3ObjectInputStream;
 public class S3BucketAccessor {
 
     public static final int[] HD = {1920, 1080};
-    public static final int[] SMALL_RESOLUTION = {640, 480};
-    public static final int[] MEDIUM_RESOLUTION = {1024, 780};
-    public static final int[] LARGE_RESOLUTION = {1600, 1200};
+
 
     private static final String BUCKET_NAME = "kuanhc96-images"; // name of the target bucket on AWS
 
@@ -39,26 +37,30 @@ public class S3BucketAccessor {
 
     // This method converts the BufferedImage that was specified by the user into a resized-BufferedImage.
     // The parameters specified determines the output image resolution.
-    // TODO: Think about the location at which the new images are saved. Will the user be able to view them?
     public void resizeAndSaveImage(int width, int height) throws IOException{
-
-        // The new imageResizer keeps track of a Map of resolutions and their corresponding images
         BufferedImage bufferedImage = getImage();
-        imageResizer = new ImageResizer(bufferedImage);
-        BufferedImage newImage = imageResizer.getResizedImage(width, height);
-        try {
-            //File resizedDirectory = new File("./images-from-bucket/resized");
-            //resizedDirectory.mkdir();
-            File newImageFile = new File("resized-" + imageName);
 
-            if (imageName.endsWith(".png")) {
-                ImageIO.write(newImage, "png", newImageFile);
-            } else {
-                ImageIO.write(newImage, "jpg", newImageFile);
+        // if the parameters are 0, the user only requested original image.
+        // therefore there is no need to resize.
+        if (width != 0 || height != 0) {
+            // The new imageResizer keeps track of a Map of resolutions and their corresponding images
+            imageResizer = new ImageResizer(bufferedImage);
+            BufferedImage newImage = imageResizer.getResizedImage(width, height);
+            try {
+                //File resizedDirectory = new File("./images-from-bucket/resized");
+                //resizedDirectory.mkdir();
+                File newImageFile = new File("resized-" + width + "x" + height + imageName);
+
+                if (imageName.endsWith(".png")) {
+                    ImageIO.write(newImage, "png", newImageFile);
+                } else {
+                    ImageIO.write(newImage, "jpg", newImageFile);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+
     }
 
     // TODO: Overload the method so that the final resolution can be defined by a constant that represents a resolution
