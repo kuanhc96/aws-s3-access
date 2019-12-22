@@ -1,9 +1,7 @@
 public class Credentials {
 
 
-    public static final String access_key_id= "AKIAQZW7PYH326JYUBUL";
-
-    public static final String secret_access_key ="";
+    public static final String ACCESS_KEY_ID= "AKIAQZW7PYH34OU6DZ6Q";
 
 
 

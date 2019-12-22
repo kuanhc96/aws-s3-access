@@ -4,16 +4,22 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>groupId</groupId>
-    <artifactId>AWSJavaHelloWorld</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>com.example.s3</groupId>
+    <artifactId>sdk-s3-examples</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <maven.compiler.source>7</maven.compiler.source>
+        <maven.compiler.target>7</maven.compiler.target>
+    </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-java-sdk-bom</artifactId>
-                <version>1.10.43</version>
+                <version>1.11.698</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -24,12 +30,11 @@
     </dependencyManagement>
 
     <dependencies>
-
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk</artifactId>
-            <version>1.11.6</version>
+            <version>1.11.698</version>
         </dependency>
-
     </dependencies>
+
 </project>
