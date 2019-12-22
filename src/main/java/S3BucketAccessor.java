@@ -11,8 +11,10 @@ import com.amazonaws.AmazonServiceException;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.ListObjectsV2Result;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 public class S3BucketAccessor {
 
@@ -44,6 +46,16 @@ public class S3BucketAccessor {
         BufferedImage bufferedImage = getImageFromCloud(name);
         imageName = name;
         resizeAndSaveImage(width, height, bufferedImage);
+    }
+
+    public void listObjectsInBucket() {
+        System.out.format("Objects in S3 bucket %s:\n", BUCKET_NAME);
+        ListObjectsV2Result result = s3Client.listObjectsV2(BUCKET_NAME);
+        List<S3ObjectSummary> objects = result.getObjectSummaries();
+        for (S3ObjectSummary os : objects) {
+            System.out.println("* " + os.getKey());
+        }
+
     }
 
     // This method converts the BufferedImage that was specified by the user into a resized-BufferedImage.
@@ -128,7 +140,4 @@ public class S3BucketAccessor {
         return bf;
     }
 
-    private void setImageName(String name) { // only used when user calls the decompress from local drive option
-        imageName = name;
-    }
 }
