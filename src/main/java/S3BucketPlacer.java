@@ -21,12 +21,13 @@ public class S3BucketPlacer {
 
     private final AmazonS3 s3Client;
 
+    // Constructor: setting up the tools needed to access the bucket
     public S3BucketPlacer() {
         imageName = "";
         s3Client = AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_2).build();
     }
 
-    // This method will add the File image that was specified by the user to the (unique) bucket demo-primary-kuanhc96
+    // This method will add the File image that was specified by the user to the (unique) bucket kuanhc96-images
     public void addImageToBucket() throws IOException {
         File image = getImage();
 
@@ -35,6 +36,7 @@ public class S3BucketPlacer {
         try {
             BufferedImage bImage = ImageIO.read(image);
             ByteArrayOutputStream os = new ByteArrayOutputStream();
+
             if (imageName.endsWith(".png")) {
                 ImageIO.write(bImage, "png", os);
             } else {
@@ -71,7 +73,6 @@ public class S3BucketPlacer {
     // This method is used to find the image that is specified by the user.
     // It will read user input the name of a jpg or png and attempt to find the file.
     // If the file is found, a file object is created and returned.
-    // TODO: What happens if the file specified is not found?
     private File getImage() {
         Scanner s = new Scanner(System.in);
 
@@ -88,10 +89,14 @@ public class S3BucketPlacer {
         return file;
     }
 
+    // parse image name so that it appears as a file with no encapsulating folders outside of it in the bucket
     private void pruneImageName() {
         int i = imageName.length() - 1; // last character of the string
         String pruned = "";
-        while (imageName.charAt(i) != '/') {
+
+        // delete everything before the '/' in the file path.
+        // If the file path is simply the file name, then it will return the file name.
+        while (imageName.charAt(i) != '/' && i >= 0) {
             pruned = imageName.charAt(i) + pruned;
             i--;
         }

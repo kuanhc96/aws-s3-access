@@ -1,10 +1,5 @@
-import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import java.util.*;
 
 // Images are obtained from an S3 bucket.
@@ -17,25 +12,15 @@ import java.util.*;
 
 public class ImageResizer {
     // minimum resolutions needed: 640 x 480, 1024 x 768 and 1600 x 1200. Original HD resolution: 1920 x 1080
-
-
-
     private Map<Integer[], BufferedImage> resolutionImageMap;
     private BufferedImage originalImage;
-    // TODO: Do I really need these fields?
-    // private int[] originalResolution;
-    // private int[] requestedResolution;
-    // private BufferedImage requestedImage;
     private int imageType;
 
     public ImageResizer(BufferedImage originalImage) {
         resolutionImageMap = new HashMap<Integer[], BufferedImage>();
         resolutionImageMap.put(new Integer[] {originalImage.getWidth(), originalImage.getHeight()}, originalImage);
         this.originalImage = originalImage;
-        // requestedResolution = null;
-        // requestedImage = null;
         imageType = originalImage.getType() == 0? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
-        // originalResolution = new int[] {originalImage.getWidth(), originalImage.getHeight()};
     }
 
     // This method searches the resolutions map to see if a resized BufferedImage was created before.

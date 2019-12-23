@@ -25,29 +25,38 @@ public class S3BucketAccessor {
 
     private String imageName; // name of the image that will be accessed from the bucket
 
-    //private BasicAWSCredentials awsCredentials;
     private final AmazonS3 s3Client;
 
     private ImageResizer imageResizer; // The same resizer is kept so that past data is retained
 
+    // Constructor: sets up the object to connect to bucket
     public S3BucketAccessor() {
         imageName = "";
-        //awsCredentials = new BasicAWSCredentials(Credentials.access_key_id, Credentials.secret_access_key);
         s3Client = AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_2).build();
         imageResizer = null;
     }
 
+    // get the requested image from the bucket and resizes it into different resolutions.
+    // One of two overloading methods;
+    // Parameters needed: int width, int height -> dimensions of the resized image.
     public void processImage(int width, int height) throws IOException {
         BufferedImage bufferedImage = getImage();
         resizeAndSaveImage(width, height, bufferedImage);
     }
 
+    // get the requested image from the bucket and resizes it into different resolutions.
+    // One of two overloading methods; this method is only called when the user requests to resize images immediately
+    // on the fly so that the image is uploaded to the bucket and then immediately downloaded locally.
+    // Parameters needed: int width, int height -> dimensions of the resized image.
+    //                    String name -> name of the file being downloaded.
+    //                This field is provided through console input when the user specifies which file is to be processed
     public void processImage(int width, int height, String name) {
         BufferedImage bufferedImage = getImageFromCloud(name);
         imageName = name;
         resizeAndSaveImage(width, height, bufferedImage);
     }
 
+    // Lists all the objects in the bucket as console output
     public void listObjectsInBucket() {
         System.out.format("Objects in S3 bucket %s:\n", BUCKET_NAME);
         ListObjectsV2Result result = s3Client.listObjectsV2(BUCKET_NAME);
@@ -84,12 +93,9 @@ public class S3BucketAccessor {
 
     }
 
-    // TODO: Overload the method so that the final resolution can be defined by a constant that represents a resolution
-    //public void resizeAndSaveImage()
-
     // This method takes user input and fetches the image specified from the bucket.
     // The file that is fetched from the bucket is returned as a BufferedImage.
-    private BufferedImage getImage() throws IOException {
+    private BufferedImage getImage() {
         Scanner s = new Scanner(System.in);
 
         boolean illegalFile = true;
@@ -104,6 +110,9 @@ public class S3BucketAccessor {
         return getImageFromCloud(imageName);
     }
 
+    // This method fetches the image specified as the parameter.
+    // It is called only when the user specifies to process an image so that an image is uploaded and then
+    // downloaded immediately
     private BufferedImage getImageFromCloud(String name) {
         BufferedImage bf = null;
         // The imageName that is specified is guaranteed to have a suffix of .png and .jpg
