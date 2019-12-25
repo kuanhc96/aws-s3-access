@@ -1,0 +1,7 @@
+Main.class
+Credentials.class
+S3BucketAccessor.class
+BucketUtils.class
+S3JavaSDKExample.class
+S3BucketPlacer.class
+ImageResizer.class

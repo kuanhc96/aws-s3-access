@@ -23,7 +23,7 @@ public class Main {
         while (yesNo.toLowerCase().startsWith("y")) {
             int serviceOption = 5;
             while (serviceOption > 4 || serviceOption < 1) {
-                System.out.println("Please choose between the following options: (1 - 3)");
+                System.out.println("Please choose between the following options: (1 - 4)");
                 System.out.println("(1) Upload an image to cloud \n" +
                         "(2) Download an image from cloud \n" +
                         "(3) Decompress an image from local drive \n" +
